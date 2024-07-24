@@ -18,11 +18,29 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+const isInvalidDate = (dateString) => {
+  const date = new Date(dateString);
+  return isNaN(date.getTime());
+};
 
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
+
+app.get("/api/:date?", function (req, res){
+  const myDate = req.params.date;
+  
+  
+  if (isInvalidDate(myDate)) {
+    res.json({error: "Invalid Date"})
+  }
+  res.json (myDate)
+   
+
+  
+
+})
 
 
 
