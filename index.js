@@ -23,25 +23,52 @@ const isInvalidDate = (dateString) => {
   return isNaN(date.getTime());
 };
 
+
+
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
 app.get("/api/:date", function (req, res){
-  let myDate = new Date(req.params.date);
+  const dateString = req.params.date;
+  let myDate = new Date(dateString);
+
+  const isValidUnixNumber = /^[0-9]+$/.test(dateString);
   
-  if (isInvalidDate(myDate)) {
-    res.json({error: "Invalid Date"})
-    return;
-  }
-  
-  if(!isInvalidDate(myDate))
-  res.json (
-    {unix: myDate.getTime(),
+  if (!isInvalidDate(myDate)) {
+    res.json({
+      unix: myDate.getTime(),
       utc: myDate.toUTCString()
-    })
+    });
+  } else if (isValidUnixNumber) {
+    myDate = new Date(parseInt(dateString));
+    if (!isInvalidDate(myDate)) {
+      res.json({
+        unix: myDate.getTime(),
+        utc: myDate.toUTCString()
+      });
+    } else {
+      res.json({ error: "Invalid Date" });
+    }
+  } else {
+    res.json({ error: "Invalid Date" });
+  }
+
   })
+
+  
+
+app.get("/api", function (req, res){
+    let emptyDate = new Date();
+
+    res.json({
+      unix: emptyDate.getTime(),
+      utc: emptyDate.toUTCString()
+    })
+})
+
+
 
 
 
